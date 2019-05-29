@@ -70,3 +70,22 @@
     - going from working state to working state
         - The Testing Goat encourages us to take one step at a time, and go from working state to working state
         - Split work out into small, achievable tasks
+
+
+
+## Recap: On Testing Design and Layout
+
+Section: [static_files_in_django](https://www.obeythetestinggoat.com/book/chapter_prettification.html#_static_files_in_django)
+
+
+The short answer is:
+- you shouldn’t write tests for design and layout per se. It’s too much like testing a constant, and the tests you write are often brittle.
+
+As a result,
+- it is valuable to have some kind of minimal "smoke test" which checks that your static files and CSS are working
+
+Why?
+- it can help pick up problems when you deploy your code to prod
+
+Aim
+- to leave yourself in a position where you can freely make changes to the design and layout, without having to go back and adjust tests all the time
