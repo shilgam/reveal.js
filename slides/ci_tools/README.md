@@ -174,8 +174,6 @@ Repo: https://github.com/SeleniumHQ/docker-selenium/
 
 ## Performance test results
 
-src: https://blog.csdn.net/chengly0129/article/details/68940720
-
 ![](img/perf_test_results.png)
 
 
