@@ -4,7 +4,7 @@
 
 ## images:
 
-![](../template/img/cat_icon.png)
+![](https://raw.githubusercontent.com/shilgam/storage/master/puppeteer/img/cat_icon.png)
 
 
 ## Vertical slide example
