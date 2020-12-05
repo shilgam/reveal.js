@@ -1,18 +1,220 @@
 # Contract testing with pact.io
 
+> or "Verifying Microservice Integrations with Contract Testing"
+
 
 
 ## What is contract testing?
-Contract testing is a technique for testing an integration point by checking each application in isolation to ensure the messages it sends or receives conform to a shared understanding that is documented in a "contract"
-
-> src: https://docs.pact.io/#what-is-contract-testing
+Contract testing is a methodology for ensuring that two separate systems (such as two services) are compatible with one other.
 
 
 
-## How pact works
+## What is *consumer-driven* contract testing?
 
-Animated step-by-step explanation of how Pact works:
-https://pactflow.io/how-pact-works/
+The "consumer-driven" prefix simply states an additional philosophical position that advocates for better internal microservices design by putting the consumers of such APIs at the heart of the design process.
+
+> Префикс «ориентированный на потребителя» просто излагает дополнительную философскую позицию, которая отстаивает лучший дизайн внутренних сервисов, помещая потребителей таких API в центр процесса проектирования.
+
+
+
+## What are the benefits of contract testing?
+
+![](img/fowler_practical_test_pyramid.png)
+
+© [Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html#TheTestPyramid)
+
+> Прежде чем обсудить преимущества контрактных тестов, обсудим какое место они занимают в пирамиде тестирования
+
+
+
+## The problem with integration tests
+
+Before we deploy an application to production, we need to be sure it works correctly with the other applications with which it integrates. To do this, traditionally we run integration tests using "live", deployed applications.
+
+![](img/how-pact-works-integration_tests.gif)
+
+© https://pactflow.io/how-pact-works
+
+> Ситуация:
+- Представим, что у нас есть система из 2-х приложений, которые взаимодействуют друг с другом по REST API
+- Перед деплоем одного из приложений мы хотим убедиться, что оно работает корректно в интеграции с другим приложением
+
+
+
+## Buzzwords
+- provider
+- consumer
+- contract
+
+
+## The problem with integration tests
+
+Integration tests
+- ✅ give us confidence to release
+
+but
+- ❌ introduce dependencies
+- ❌ give slow feedback
+- ❌ break easily
+- ❌ require lots of maintenance
+
+> Обычно эта задачи решается созданием интеграционных тестов.
+Для запуска нужно развернуть все приложения, необходимые для работы системы.
+
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=571
+
+
+
+## Why not use isolated tests?
+
+![](img/how-pact-works-isolated_tests.gif)
+
+© https://pactflow.io/how-pact-works
+
+
+
+## Why not use isolated tests?
+
+By testing each side of an integration point using a simulated version of the other application, we get two sets of tests which
+
+- ✅ run independently
+- ✅ give fast feedback
+- ✅ are stable
+- ✅ are easy to maintain
+
+but
+- ❌ do not give us confidence to release.
+
+This is because there is nothing to ensure that the simulated applications behave the same way as the real ones.
+
+> Dev предполагает, что 2й сервис будет функционировать определенным образом. Но эти предположения никак не проверяются с реальным приложением
+
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=469
+
+
+
+## Compare contract testing tools
+
+TODO: add info
+
+
+
+## How Pact helps - the consumer side
+
+Testing a consumer using a Pact mock provider
+![](img/how-pact-works-the-consumer-side.gif)
+
+Src: https://pactflow.io/how-pact-works
+
+
+
+## How Pact helps - the provider side
+
+Testing a provider using a Pact simulated consumer
+![](img/how-pact-works-the-provider-side.gif)
+
+Src: https://pactflow.io/how-pact-works
+
+
+
+## How Pact helps
+
+Using Pact gives you tests that
+
+- ✅ run independently
+- ✅ give fast feedback
+- ✅ are stable
+- ✅ are easy to maintain
+- ✅ **give you confidence to release**
+
+
+
+## TODO: example with Zoo app to show how pact works
+
+
+
+## why consumer driven contract?
+
+![](img/why_consumer_driven_contract_public_api.png)
+
+Src: https://youtu.be/h-79QmIV824?t=710
+
+
+
+## Pact.io pros and cons
+
+Pros:
+- Simple specification by example (example request & response)
+- TDD for services
+
+Cons:
+- ???? isolated build data dependency / (Isolated failure problem) ([src](https://youtu.be/h-79QmIV824?t=1868))
+
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2327
+
+
+
+## Caveats (Предостережение)
+- ...
+- Learning curve per pact framework
+- Frameworks are WIP
+- Postel's law:
+    - we are very strict on what we send in request
+    - but when we get response, we allow extra keys in there, so that different consumers can have different expectations of the same provider and not brake each other.
+    > i.e. define in contract test only fields that you are actually using.
+
+- provider side setup is time consuming
+- Adoption essential
+
+> Ver #2 of slide: https://youtu.be/nQ0UGY2-YYI?t=1978
+
+
+
+## Sharing Pact files
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=1120
+
+
+
+## Pact broker - Share pacts
+
+![](img/pact-broker-share-pacts.jpg)
+
+Src: https://www.infoq.com/presentations/pact/ (15:50)
+
+> How to share pact between to codebases?
+> - push from one build to another repo
+> - use Pact Broker - middle man between 2 projects
+>     1. Consumer generate pact and publish to the broker
+>     2. Provider will know url which will always give the latest pact
+
+
+
+## Provider states
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=1655
+
+> Как привести provider в нужное нам состояние перед отправкой реквеста?
+
+
+
+## Closing the loop
+How it works:
+1. On consumer side: Publish new pact file to the Pact Broker
+1. Pact Broker is configured to automatically trigger verification build on the provider side
+
+Fully automated Solution: Swagger Validator
+
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2083
+
+
+
+
+## Pact Broker - Autogenerated docs
+
+Live documentation of your contract
+
+![](img/pact-broker-autogenerated-docs.jpg)
+
+Src: https://www.infoq.com/presentations/pact/ (16:15)
 
 
 
@@ -152,6 +354,16 @@ Situations where you cannot load data into the provider without using the API th
 
 
 
+## Language support
+> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2374
+
+
+
+## Getting Started with Pact
+- "Convince me" section in site  (как убедить команду)
+
+
+
 ## More info
 
 - [Requesting new features & Roadmap](https://pact.canny.io)
@@ -171,3 +383,48 @@ Situations where you cannot load data into the provider without using the API th
 - Implement webhooks to publish pact verification statuses to GitLab
 - Convince the team to deploy and support single Pact Broker instance
 - Modify release process (can-i-deploy script, tag released versions after release)
+
+
+
+# END
+
+
+
+## Цель:
+- Что нам нужно сделать, чтобы быть уверенными в работоспособности системы?
+
+Test it!
+- **Isolated tests** - При необходимости Используем mocks и stabs чтобы эмулировать взаимодействие с реальными внешними сервисами.
+    - Pros:
+        - Быстрая обратная связь
+    - Cons:
+        - даже 100% покрытие не дает гарантий отсутствия ошибок
+            - WHY? - поведение заменяемого сервиса со временем может измениться. Эта проблема выявится только при работе сервисов в интеграции
+- **Integration tests** - Тестируем сервисы в связке
+    - Pros:
+        - дают гарантию работоспособности системы в целом
+    - Cons:
+        - slow
+        - easy to break
+        - hard to fix
+        - Растут в геометрической прогрессии
+
+
+
+## The problem with integration tests
+
+|                                    |                                     |
+| ---------------------------------- | ----------------------------------- |
+| ![](img/how-pact-works-integration_tests.gif)     | ![](img/how-pact-works-integration_tests_comments.png) |
+
+Src: https://pactflow.io/how-pact-works
+
+
+
+## Why not use isolated tests?
+
+|                                    |                                     |
+| ---------------------------------- | ----------------------------------- |
+| ![](img/how-pact-works-isolated_tests.gif)        | ![](img/how-pact-works-isolated_tests_comments.png) |
+
+Src: https://pactflow.io/how-pact-works
