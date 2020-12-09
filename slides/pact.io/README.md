@@ -1,283 +1,380 @@
-# Contract testing with pact.io
-
-> or "Verifying Microservice Integrations with Contract Testing"
+# Contract Testing with Pact
 
 
 
-## What is contract testing?
-Contract testing is a methodology for ensuring that two separate systems (such as two services) are compatible with one other.
+## Background
+
+![](img/german.png)
 
 
 
-## What is *consumer-driven* contract testing?
+## What is Contract Testing?
 
-The "consumer-driven" prefix simply states an additional philosophical position that advocates for better internal microservices design by putting the consumers of such APIs at the heart of the design process.
+Contract Testing - methodology for ensuring that two separate systems (such as two services) are compatible with one other.
 
-> Префикс «ориентированный на потребителя» просто излагает дополнительную философскую позицию, которая отстаивает лучший дизайн внутренних сервисов, помещая потребителей таких API в центр процесса проектирования.
+![](img/contract_testing_defn.png)
+
+© [Alexey Vinogradov](https://youtu.be/OCoKgXeNSS8?t=344)
 
 
 
-## What are the benefits of contract testing?
+## Contract Testing approaches
+
+- **Provider driven**
+    - tools like Swagger, etc.
+- **Consumer driven**
+    - consumers at the center of the design process -> better design
+
+
+
+## Consumer-Driven Contract
+
+![](img/contract_testing_consumer_driven.png)
+
+© [Alexey Vinogradov](https://youtu.be/OCoKgXeNSS8)
+
+
+
+## Reference
+
+* [Ian Robinson, **2006**](https://martinfowler.com/articles/consumerDrivenContracts.html)
+![](img/contract_testing_reference.png)
+
+
+
+
+## The definition of contract
+* Document schemas
+* Interfaces
+    * `GET /products?page=12&per_page=10`
+* Conversations
+    * Example: hotel booking service.  Can consumer expect the service to "remember" the details of the reservation?
+* Quality of service characteristics
+    * Availability, Latency, Capacity
+* ???
+
+
+
+## Contract Tests and Test Pyramid
 
 ![](img/fowler_practical_test_pyramid.png)
 
 © [Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html#TheTestPyramid)
 
-> Прежде чем обсудить преимущества контрактных тестов, обсудим какое место они занимают в пирамиде тестирования
+- More integration - more problems with tests
+- More integration - more confidence to release (when the tests pass)
+
+
+
+## Contract Tests and Test Pyramid
+
+![](img/fowler_practical_test_pyramid_notes.png)
+
+© [Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html#TheTestPyramid)
+
+- More integration - more problems with tests
+- More integration - more confidence to release (when the tests pass)
 
 
 
 ## The problem with integration tests
 
-Before we deploy an application to production, we need to be sure it works correctly with the other applications with which it integrates. To do this, traditionally we run integration tests using "live", deployed applications.
+|  |  |
+| --- | --- |
+| ![](img/how-pact-works-integration_tests.gif) | ![](img/contract_testing_integration_tests.png) |
 
-![](img/how-pact-works-integration_tests.gif)
-
-© https://pactflow.io/how-pact-works
-
-> Ситуация:
-- Представим, что у нас есть система из 2-х приложений, которые взаимодействуют друг с другом по REST API
-- Перед деплоем одного из приложений мы хотим убедиться, что оно работает корректно в интеграции с другим приложением
+© [How Pact works](https://pactflow.io/how-pact-works)
 
 
 
-## Buzzwords
-- provider
-- consumer
-- contract
+## The problem with isolated tests
 
+|  |  |
+| --- | --- |
+| ![](img/how-pact-works-isolated_tests.gif) | ![](img/contract_testing_isolated_tests.png) |
 
-## The problem with integration tests
-
-Integration tests
-- ✅ give us confidence to release
-
-but
-- ❌ introduce dependencies
-- ❌ give slow feedback
-- ❌ break easily
-- ❌ require lots of maintenance
-
-> Обычно эта задачи решается созданием интеграционных тестов.
-Для запуска нужно развернуть все приложения, необходимые для работы системы.
-
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=571
+© [How Pact works](https://pactflow.io/how-pact-works)
 
 
 
-## Why not use isolated tests?
-
-![](img/how-pact-works-isolated_tests.gif)
-
-© https://pactflow.io/how-pact-works
-
-
-
-## Why not use isolated tests?
-
-By testing each side of an integration point using a simulated version of the other application, we get two sets of tests which
-
-- ✅ run independently
-- ✅ give fast feedback
-- ✅ are stable
-- ✅ are easy to maintain
-
-but
-- ❌ do not give us confidence to release.
-
-This is because there is nothing to ensure that the simulated applications behave the same way as the real ones.
-
-> Dev предполагает, что 2й сервис будет функционировать определенным образом. Но эти предположения никак не проверяются с реальным приложением
-
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=469
-
-
-
-## Compare contract testing tools
-
-TODO: add info
-
-
-
-## How Pact helps - the consumer side
+## Contract Tests - the Consumer side
 
 Testing a consumer using a Pact mock provider
 ![](img/how-pact-works-the-consumer-side.gif)
 
-Src: https://pactflow.io/how-pact-works
+© [How Pact works](https://pactflow.io/how-pact-works)
 
 
 
-## How Pact helps - the provider side
+## Contract Tests - the Provider side
 
 Testing a provider using a Pact simulated consumer
 ![](img/how-pact-works-the-provider-side.gif)
 
-Src: https://pactflow.io/how-pact-works
+© [How Pact works](https://pactflow.io/how-pact-works)
 
 
 
-## How Pact helps
+## How Contract Tests helps
 
-Using Pact gives you tests that
+**Contract tests gives you tests that...**
 
-- ✅ run independently
-- ✅ give fast feedback
-- ✅ are stable
-- ✅ are easy to maintain
-- ✅ **give you confidence to release**
-
-
-
-## TODO: example with Zoo app to show how pact works
+- give you confidence to release ✅
+- run independently ✅
+- give fast feedback ✅
+- are stable ✅
+- are easy to maintain ✅
 
 
 
-## why consumer driven contract?
+## [Pact](https://pact.io)
 
-![](img/why_consumer_driven_contract_public_api.png)
-
-Src: https://youtu.be/h-79QmIV824?t=710
-
+- Pact - a family of testing frameworks (Pact-JVM, Pact Ruby, Pact .NET, Pact Go, Pact.js, Pact Swift etc.) provide support for Consumer Driven Contract Testing between dependent systems where the integration is based on HTTP (or message queues for some of the implementations).
+- Pact is particularly useful for µ-services, where there can be lots of inter-dependent services and integration testing quickly becomes unfeasible.
 
 
-## Pact.io pros and cons
 
-Pros:
+## Pact: Supported languages
+
+- Ruby
+- JVM (Scala, Java, ect)
+- Python
+- .Net
+- Swift
+- Go
+- Rust
+- C++
+- php
+- \*\*\* [language agnostic verifier](https://docs.pact.io/getting_started/verifying_pacts/#using-a-language-that-is-not-pact-native)
+
+
+
+## Pact: Example of contract test
+
+```
+// src/api.pact.spec.js
+
+import path from 'path';
+import { Pact } from '@pact-foundation/pact';
+import { eachLike, like } from '@pact-foundation/pact/dsl/matchers';
+import { API } from './api';
+
+const mockProvider = new Pact({
+  consumer: 'pact-demo-consumer',
+  provider: 'pact-demo-provider',
+  log: path.resolve(process.cwd(), 'logs', 'pact.log'),
+  logLevel: 'warn',
+  dir: path.resolve(process.cwd(), 'pacts'),
+  spec: 2,
+});
+
+describe('API Pact test', () => {
+  beforeAll(() => mockProvider.setup());
+
+  afterEach(() => mockProvider.verify());
+
+  afterAll(() => mockProvider.finalize());
+
+  describe('getting all products', () => {
+    test('products exists', async () => {
+      // set up Pact interactions
+      await mockProvider.addInteraction({
+        state: 'products exist',
+        uponReceiving: 'a request to get all products',
+        withRequest: {
+          method: 'GET',
+          path: '/products',
+        },
+        willRespondWith: {
+          status: 200,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+          body: eachLike({
+            id: like(9),
+            type: like('CREDIT_CARD'),
+            name: like('Gem Visa'),
+          }, { min: 2 }),
+        },
+      });
+
+      const api = new API(mockProvider.mockService.baseUrl);
+
+      // make request to Pact mock server
+      const product = await api.getAllProducts();
+
+      expect(product).toStrictEqual([
+        { id: 9, name: 'Gem Visa', type: 'CREDIT_CARD' },
+        { id: 9, name: 'Gem Visa', type: 'CREDIT_CARD' },
+      ]);
+    });
+  });
+});
+```
 - Simple specification by example (example request & response)
-- TDD for services
-
-Cons:
-- ???? isolated build data dependency / (Isolated failure problem) ([src](https://youtu.be/h-79QmIV824?t=1868))
-
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2327
 
 
 
-## Caveats (Предостережение)
-- ...
-- Learning curve per pact framework
-- Frameworks are WIP
-- Postel's law:
-    - we are very strict on what we send in request
-    - but when we get response, we allow extra keys in there, so that different consumers can have different expectations of the same provider and not brake each other.
-    > i.e. define in contract test only fields that you are actually using.
+## Example of generated contract (Pact file)
 
-- provider side setup is time consuming
-- Adoption essential
+```
+// pact-demo-consumer-pact-demo-provider.json
 
-> Ver #2 of slide: https://youtu.be/nQ0UGY2-YYI?t=1978
+{
+  "consumer": { ... },
+  "provider": { ... },
+  "interactions": [
+    {
+      "description": "a request to get all products",
+      "providerState": "products exist",
+      "request": {
+        "method": "GET",
+        "path": "/products"
+      },
+      "response": {
+        "status": 200,
+        "headers": { ... },
+        "body": [
+          {
+            "id": 9,
+            "type": "CREDIT_CARD",
+            "name": "Gem Visa"
+          },
+          {
+            "id": 9,
+            "type": "CREDIT_CARD",
+            "name": "Gem Visa"
+          }
+        ],
+        "matchingRules": {
+          "$.body": {
+            "min": 2
+          },
+          "$.body[*].*": {
+            "match": "type"
+          },
+          "$.body[*].id": {
+            "match": "type"
+          },
+          "$.body[*].type": {
+            "match": "type"
+          },
+          "$.body[*].name": {
+            "match": "type"
+          }
+        }
+      }
+    },
+    { ... }
+  ],
+  "metadata": { ... }
+}
+```
+
+
+
+## Pact: Postel's law
+
+Your services under test must comply with Postel's law (a.k.a. `robustness principle`):
+
+> Be conservative in what you do, be liberal in what you accept from others
+
+- be very strict on what you send in request
+- but when you get response, you allow extra keys in there
+
+**WHY?** Different consumers can have different expectations of the same provider and not brake each other.
+
+
+
+## Pact: Provider states
+
+![](img/pact_provider_states.png)
+
+© [Alexey Vinogradov](https://youtu.be/OCoKgXeNSS8)
+
+* Feature is useful when response depends on the state of the provider
 
 
 
 ## Sharing Pact files
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=1120
+
+![](img/sharing_pact_files.png)
+
+© [Atlassian](https://youtu.be/-6x6XBDf9sQ?t=1120)
 
 
 
-## Pact broker - Share pacts
+## Pact Broker
 
-![](img/pact-broker-share-pacts.jpg)
+![](img/pact_broker_screenshot.png)
 
-Src: https://www.infoq.com/presentations/pact/ (15:50)
-
-> How to share pact between to codebases?
-> - push from one build to another repo
-> - use Pact Broker - middle man between 2 projects
->     1. Consumer generate pact and publish to the broker
->     2. Provider will know url which will always give the latest pact
+Pact Broker - Web App is used for manangement of JSON pacts of all services in the system
 
 
 
-## Provider states
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=1655
+## Pact Broker - Sharing pact files
 
-> Как привести provider в нужное нам состояние перед отправкой реквеста?
+![](img/pact-broker-share-pacts.png)
 
-
-
-## Closing the loop
-How it works:
-1. On consumer side: Publish new pact file to the Pact Broker
-1. Pact Broker is configured to automatically trigger verification build on the provider side
-
-Fully automated Solution: Swagger Validator
-
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2083
+© [Beth Skurrie - Pacts to the Rescue](https://www.infoq.com/presentations/pact)
 
 
 
+## Pact Broker - Closing the loop
 
-## Pact Broker - Autogenerated docs
+Option 1.
+1. Consumer app publish new pact file to the Pact Broker
+1. Pact Broker automatically trigger verification build on the provider side
 
-Live documentation of your contract
-
-![](img/pact-broker-autogenerated-docs.jpg)
-
-Src: https://www.infoq.com/presentations/pact/ (16:15)
-
-
-
-
-## When to use Pact
-
-Pact is most valuable for designing and testing integrations where:
-
-- You (or your team/organisation) control the development of both the consumer and the provider.
-- The consumer and provider are both under active development.
-- The provider team can easily control the data returned in the provider's responses.
-- The requirements of the consumer(s) are going to be used to drive the features of the provider.
-- There is a small enough number of consumers for a given provider that the provider team can manage an individual relationship with each consumer team.
-
-### The primary advantages are:
-
-- You can continuously evolve your codebases knowing that Pact will guarantee contracts are met.
-- You can find out before you deploy whether or not your applications will work together - there is no need to wait for slow e2e tests.
-
-> src: https://docs.pact.io/getting_started/what_is_pact_good_for
-
-
-.
+Option 2
+* if you are using Open API then consider using [Swagger Mock Validator plugin](https://bitbucket.org/atlassian/swagger-mock-validator) (developed at Atlassian)
 
 
 
-## When Pact is not a good solution
-- Testing APIs where the team maintaining the other side of the integration will not also being using Pact
-- Testing APIs where the consumers cannot be individually identified (eg. public APIs).
-Situations where you cannot load data into the provider without using the API that you're actually testing (eg. public APIs).
-- Situations where you cannot control the data being used to generate the provider's responses.
-- Testing new or existing providers where the functionality is not being driven or altered by the needs of particular consumers (eg. a public API or an OAuth provider where the API is completely stable)
-- Testing providers where the consumer and provider teams do not have good communication channels.
-- Performance and load testing.
-- Functional testing of the provider - that is what the provider's own tests should do. Pact is about checking the contents and format of requests and responses.
-- Testing "pass through" APIs, where the provider merely passes on the request contents to a downstream service without validating them.
-- Use as a general purpose mocking or stubbing tool for browser driven tests.
+## Pact Broker - Major features
 
-> src: https://docs.pact.io/getting_started/what_is_pact_good_for
+* Manage contract versions
+![](img/pact_broker_contract_versioning.png)
 
-
-.
+Allows to release your services independently
 
 
 
-### Example of deployment pipeline for Consumer app
-![](img/diagram-consumer-pipeline.png)
+## Pact Broker - Major features
 
-> src: https://docs.pact.io/pact_nirvana/step_4#consumer-pipeline
+* **can-i-deploy** script - allows to easily setup Continuous Deployment of your services after verifying contracts
 
+![](img/pact_broker_verification_matrix.png)
 
-.
+`$ pact-broker can-i-deploy --pacticipant Foo --version 23 --pacticipant Bar --version 56`
 
-
-
-### Example of deployment pipeline for Provider app
-
-![](img/diagram-provider-pipeline.png)
-
-> src: https://docs.pact.io/pact_nirvana/step_4/#provider-pipeline
+(exit code 0 means yes!)
 
 
-.
+
+## Pact Broker - Minor features
+
+* Live documentation of your contract
+![](img/pact-broker-autogenerated-docs.png)
+
+© [Beth Skurrie - Pacts to the Rescue](https://www.infoq.com/presentations/pact)
+
+
+
+## Pact Broker - Minor features
+
+* Live network graph of your services
+![](img/pact_broker_network_graph.png)
+
+© [Beth Skurrie - Pacts to the Rescue](https://www.infoq.com/presentations/pact)
+
+
+
+## Pact Broker - Minor features
+
+* All operations (like creating webhooks) can be fully automated
+* But is also easy to experiment (HAL browser)
+![](img/pact_broker_hal_browser.png)
 
 
 
@@ -285,10 +382,7 @@ Situations where you cannot load data into the provider without using the API th
 
 ![](img/diagram_webhook_end_to_end.png)
 
-> src: https://docs.pact.io/pact_broker/webhooks/#example-cicd-and-webhook-configuration
-
-
-.
+© [docs.pact.io](https://docs.pact.io/pact_broker/webhooks/#example-cicd-and-webhook-configuration)
 
 
 
@@ -296,10 +390,84 @@ Situations where you cannot load data into the provider without using the API th
 
 ![](img/diagram_webhook_end_to_end_skip.png)
 
-> src: https://docs.pact.io/pact_broker/webhooks/#example-cicd-and-webhook-configuration
+© [docs.pact.io](https://docs.pact.io/pact_broker/webhooks/#example-cicd-and-webhook-configuration)
 
 
-.
+
+## Pact - Primary advantages
+
+- You can continuously evolve your codebases knowing that Pact will guarantee contracts are met
+- You can find out before you deploy whether or not your applications will work together - there is no need to wait for slow e2e tests
+
+
+
+## Advantages
+
+- Nice [workshops](https://docs.pact.io/implementation_guides/workshops) in different languages - To grasp an idea of how it works
+- Nice [CI/CD workshop](https://docs.pactflow.io/docs/workshops/ci-cd) - To understand how Pact fit into the CI/CD pipelines
+- Useful [Webhooks template library](https://docs.pact.io/pact_broker/webhooks) - To automate the CI/CD process and to simplify integration with other tools.
+
+
+
+## Downsides
+
+- Could be hard to convince your team to use contract testing (based on experience of other teams)
+- New moving parts (But this is first time complexity)
+- Frameworks are WIP
+    - DSLs are pretty different in different languages
+    - DSLs are not mature - need to setup in different places (Example: gradle plugin of pact-jvm)
+    - Not many examples on how to setup pact with recommended params
+    - Support of message queues, gRPC - in progress
+- Could be tricky to:
+    - setup provider states
+    - setup autorisation / SSL / etc
+- Pact doesn't work well when communication between teams is bad
+
+
+
+## Summary
+
+- Not a silver bullet
+- Pretty complex concepts
+- Good if you have compatibility problems between Consumers/Providers
+- Good if you need to reduce the time of running integration tests
+
+
+
+## More info
+
+- [Roadmap](https://pact.canny.io)
+- [FAQ. Convince me why to use Pact](https://docs.pact.io/faq/convinceme)
+- [Feature support in different languages](https://docs.pact.io/roadmap/feature_support)
+- [Talks and Presentations](https://docs.pact.io/getting_started/further_reading)
+- [Tutorials & Workshops](https://docs.pact.io/implementation_guides/workshops)
+- Demo apps for this slides can be found here:
+    - consumer app (pact-js): https://github.com/shilgam/pact-demo-consumer
+    - provider app (pact-jvm): https://github.com/shilgam/pact-demo-provider
+
+
+
+# THANK YOU!
+
+
+
+Integration tests ...
+
+* give us confidence to release ✅
+* ~~run independently~~ ❌
+* ~~give fast feedback~~ ❌
+* ~~are stable~~ ❌
+* ~~are easy to maintain~~ ❌
+
+
+
+
+Isolated tests ...
+* ~~give us confidence to release~~ ❌
+* run independently ✅
+* give fast feedback ✅
+* are stable ✅
+* are easy to maintain ✅
 
 
 
@@ -354,27 +522,6 @@ Situations where you cannot load data into the provider without using the API th
 
 
 
-## Language support
-> Ver #2 of slide: https://youtu.be/-6x6XBDf9sQ?t=2374
-
-
-
-## Getting Started with Pact
-- "Convince me" section in site  (как убедить команду)
-
-
-
-## More info
-
-- [Requesting new features & Roadmap](https://pact.canny.io)
-- [FAQ. Convince me why to use Pact](https://docs.pact.io/faq/convinceme)
-- [History of pact](https://docs.pact.io/history/)
-- [Feature support of multiple implementations of Pact](https://docs.pact.io/roadmap/feature_support)
-- [Talks and Presentations](https://docs.pact.io/getting_started/further_reading)
-- [Tutorials & Workshops](https://docs.pact.io/implementation_guides/workshops)
-
-
-
 ## Challenges
 - Setup contract tests to support authorisation
     - [description](https://github.com/pact-foundation/pact-workshop-js/tree/step8#step-8---authorization)
@@ -386,45 +533,27 @@ Situations where you cannot load data into the provider without using the API th
 
 
 
-# END
+### Example of deployment pipeline for Consumer app
+![](img/diagram-consumer-pipeline.png)
+
+> src: https://docs.pact.io/pact_nirvana/step_4#consumer-pipeline
 
 
 
-## Цель:
-- Что нам нужно сделать, чтобы быть уверенными в работоспособности системы?
+### Example of deployment pipeline for Provider app
 
-Test it!
-- **Isolated tests** - При необходимости Используем mocks и stabs чтобы эмулировать взаимодействие с реальными внешними сервисами.
-    - Pros:
-        - Быстрая обратная связь
-    - Cons:
-        - даже 100% покрытие не дает гарантий отсутствия ошибок
-            - WHY? - поведение заменяемого сервиса со временем может измениться. Эта проблема выявится только при работе сервисов в интеграции
-- **Integration tests** - Тестируем сервисы в связке
-    - Pros:
-        - дают гарантию работоспособности системы в целом
-    - Cons:
-        - slow
-        - easy to break
-        - hard to fix
-        - Растут в геометрической прогрессии
+![](img/diagram-provider-pipeline.png)
+
+> src: https://docs.pact.io/pact_nirvana/step_4/#provider-pipeline
 
 
 
-## The problem with integration tests
+## When to use Pact
 
-|                                    |                                     |
-| ---------------------------------- | ----------------------------------- |
-| ![](img/how-pact-works-integration_tests.gif)     | ![](img/how-pact-works-integration_tests_comments.png) |
+Pact is most valuable for designing and testing integrations where:
 
-Src: https://pactflow.io/how-pact-works
-
-
-
-## Why not use isolated tests?
-
-|                                    |                                     |
-| ---------------------------------- | ----------------------------------- |
-| ![](img/how-pact-works-isolated_tests.gif)        | ![](img/how-pact-works-isolated_tests_comments.png) |
-
-Src: https://pactflow.io/how-pact-works
+- You (or your team/organisation) control the development of both the consumer and the provider.
+- The consumer and provider are both under active development.
+- The provider team can easily control the data returned in the provider's responses.
+- The requirements of the consumer(s) are going to be used to drive the features of the provider.
+- There is a small enough number of consumers for a given provider that the provider team can manage an individual relationship with each consumer team.
